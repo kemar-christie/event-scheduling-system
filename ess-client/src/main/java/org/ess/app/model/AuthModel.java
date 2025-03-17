@@ -10,56 +10,54 @@ public class AuthModel {
 
     /**
      * The user id
-     *
-     *
+     * <p>
+     * <p>
      * -- GETTER --
-     *  Retrieve the user id number
+     * Retrieve the user id number
      *
-     @field id {@link Integer}
-      * @return {@link String}
+     * @field id {@link Integer}
+     * @return {@link String}
      */
     private String idNumber;
 
     /**
      * The username
-     *
-     *
+     * <p>
+     * <p>
      * -- GETTER --
-     *  Retrieve the user name
+     * Retrieve the user name
      *
-     @field username {@link String}
-      * @return {@link String}
+     * @field username {@link String}
+     * @return {@link String}
      */
     private String username;
 
     /**
      * The user role
-     *
-     *
+     * <p>
      * -- GETTER --
-     *  Retrieve the user role
+     * Retrieve the user role
      *
-     @field role {@link String}
-      * @return {@link String}
+     * @field role {@link String}
+     * @return {@link String}
      */
     private String role;
 
     /**
      * The user password
-     *
-     *
+     * <p>
      * -- GETTER --
-     *  Retrieve the user password
+     * Retrieve the user password
      *
-     @field password {@link String}
-      * @return {@link String}
+     * @field password {@link String}
+     * @return {@link String}
      */
     private String password;
 
     /**
      * The default constructor
      */
-    public AuthModel(){
+    public AuthModel() {
 
         idNumber = "";
         username = "";
@@ -70,8 +68,8 @@ public class AuthModel {
     /**
      * The primary constructor
      *
-     * @param id {@link Integer}
-     * @param role {@link String}
+     * @param id       {@link Integer}
+     * @param role     {@link String}
      * @param password {@link String}
      */
     public AuthModel(String id, String username, String role, String password) {

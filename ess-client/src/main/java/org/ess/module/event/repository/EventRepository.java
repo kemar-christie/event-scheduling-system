@@ -8,12 +8,18 @@ import java.util.List;
 
 public interface EventRepository {
 
-    @GET("users")
+    @GET("/api/events/{id}")
+    Call<Boolean> get(@Path("id") int id);
+
+    @PUT("/api/events/{id}")
+    Call<EventModel> put(@Path("id") long id, @Body EventModel assetModel);
+
+    @DELETE("/api/events/{id}")
+    Call<Boolean> delete(@Path("id") long id);
+
+    @GET("/api/events")
     Call<List<EventModel>> get();
 
-    @POST("users")
+    @POST("/api/events")
     Call<EventModel> post(@Body EventModel assetModel);
-
-    @DELETE("users/{id}")
-    Call<Boolean> delete(@Path("id") int id);
 }

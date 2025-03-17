@@ -20,7 +20,7 @@ import org.ess.module.user.repository.UserFakeRepository;
 import org.ess.module.user.Event.UserEvent;
 import org.ess.module.user.model.UserModel;
 import org.ess.module.user.service.UserService;
-import org.ess.module.user.route.UserRoute;
+import org.ess.app.window.View;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
@@ -99,8 +99,8 @@ public class UserTableController extends TabController implements Initializable 
             var hBox = new HBox();
             var editBtn = new Button("Edit");
             var deleteBtn = new Button("Delete");
-            editBtn.setOnMouseClicked(event -> UserRoute.userFormLayout());
-            deleteBtn.setOnMouseClicked(event -> UserRoute.deleteConfirmationLayout());
+            editBtn.setOnMouseClicked(event -> View.userFormWindow());
+            deleteBtn.setOnMouseClicked(event -> View.userDeleteConfirmationWindow());
             hBox.getChildren().add(editBtn);
             hBox.getChildren().add(deleteBtn);
             hBox.setSpacing(10);

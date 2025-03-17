@@ -1,17 +1,16 @@
 package org.ess.app.common;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
+@Getter
 public abstract class Database<T> {
 
-    /**
-     * Store the file instance
-     *
-     * @var {@link File}
-     */
+
     protected File file;
 
     /**
@@ -39,7 +38,7 @@ public abstract class Database<T> {
     /**
      * Initialize the database file
      */
-    private void initialize(){
+    private void initialize() {
 
         try {
 
@@ -50,16 +49,6 @@ public abstract class Database<T> {
 
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Retrieve the database file
-     *
-     * @return {@link File}
-     */
-    public File getFile() {
-
-        return file;
     }
 
     /**

@@ -1,6 +1,5 @@
-package org.ess.app.controller;
+package org.ess.app.auth;
 
-import com.google.gson.GsonBuilder;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,12 +17,14 @@ import org.ess.app.common.Navigate;
 import org.jetbrains.annotations.NotNull;
 import org.ess.app.model.User;
 import org.ess.app.model.AuthModel;
-import org.ess.app.service.UserService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,22 +73,22 @@ public class AuthController implements Initializable {
     private void onClickSignIn(MouseEvent event) {
         logger.info("onClickSignIn()");
 
-        var isValidEmail = this.email(fxIdFieldContainer, fxUsername, "Not a valid email address");
-        var isValidPassword = this.validatePassword();
-
-        if (!isValidEmail || !isValidPassword) return;
+//        var isValidEmail = this.email(fxIdFieldContainer, fxUsername, "Not a valid email address");
+//        var isValidPassword = this.validatePassword();
+//
+//        if (!isValidEmail || !isValidPassword) return;
 
         var user = new User().setEmail(fxUsername.getText()).setPassword(fxPassword.getText());
         this.userService.auth(user, new Callback<>() {
             @Override
-            public void onResponse(@NotNull Call<User> call, @NotNull Response<User> response) {
-                Data.user = response.body();
-                logger.info("Success: {}", new GsonBuilder().setPrettyPrinting().create().toJson(Data.user));
-                Platform.runLater(() -> Navigate.to("staff_table.fxml"));
+            public void onResponse(@NotNull Call<Map<String, String>> call, @NotNull Response<Map<String, String>> response) {
+                Data.token = Optional.ofNullable(response.body()).orElse(new HashMap<>()).get("token");
+                logger.info("Success: {}", response.body());
+                Platform.runLater(() -> Navigate.to("dashboard.fxml"));
             }
 
             @Override
-            public void onFailure(@NotNull Call<User> call, @NotNull Throwable throwable) {
+            public void onFailure(@NotNull Call<Map<String, String>> call, @NotNull Throwable throwable) {
 
             }
         });
@@ -101,7 +102,7 @@ public class AuthController implements Initializable {
     @FXML
     private void onEnterIdNumber(KeyEvent keyEvent) {
 
-        if (validateIdNumber()) authModel.setIdNumber(fxUsername.getText());
+//        if (validateIdNumber()) authModel.setIdNumber(fxUsername.getText());
     }
 
     /**
@@ -126,7 +127,7 @@ public class AuthController implements Initializable {
     @FXML
     private void onEnterPassword(KeyEvent keyEvent) {
 
-        if (validatePassword()) authModel.setPassword(fxPassword.getText());
+//        if (validatePassword()) authModel.setPassword(fxPassword.getText());
 
     }
 

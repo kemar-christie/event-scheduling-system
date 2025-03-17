@@ -11,42 +11,65 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ess.app.common.FormMode;
 import org.ess.app.common.TabType;
 import org.ess.app.controller.TabController;
+import org.ess.module.asset.event.AssetEvent;
 import org.ess.module.asset.model.AssetModel;
-import org.ess.module.asset.repository.AssetFakeRepository;
-import org.ess.module.user.model.UserModel;
-import org.ess.module.user.repository.UserFakeRepository;
-import org.ess.module.user.route.UserRoute;
+import org.ess.module.asset.service.AssetService;
+import org.ess.app.window.View;
 import org.jetbrains.annotations.NotNull;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AssetTableController extends TabController implements Initializable {
 
     @FXML
     TableView<AssetModel> fxAssetTableLayout;
 
-    private final ObservableList<AssetModel> userModelObservableList = FXCollections.observableArrayList(new ArrayList<>());
+    private final AssetService assetService = new AssetService();
 
     protected static final Logger logger = LogManager.getLogger(AssetTableController.class);
 
+    private final ObservableList<AssetModel> userModelObservableList = FXCollections.observableArrayList(new ArrayList<>());
+
+    private void get() {
+        logger.info("Get");
+        assetService.get(new Callback<>() {
+            @Override
+            public void onResponse(@NotNull Call<List<AssetModel>> call, @NotNull Response<List<AssetModel>> response) {
+                logger.info("Get Success {} {}", response.code(), response.message());
+
+                userModelObservableList.clear();
+                userModelObservableList.addAll(Optional.ofNullable(response.body()).orElse(new ArrayList<>()));
+                fxAssetTableLayout.setItems(userModelObservableList);
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<List<AssetModel>> call, @NotNull Throwable throwable) {
+                logger.info("Get");
+                logger.error(throwable.getMessage());
+            }
+        });
+    }
+
     @Override
     public void initialize(Tab tab) {
-        userModelObservableList.clear();
-        userModelObservableList.addAll(AssetFakeRepository.getData(50));
-        fxAssetTableLayout.setItems(userModelObservableList);
+        get();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logger.info("Initialize");
 
-        TableColumn<AssetModel, Integer> idColumn = new TableColumn<>("ID");
+        TableColumn<AssetModel, Long> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getId()));
 
         TableColumn<AssetModel, String> usernameColumn = new TableColumn<>("Name");
@@ -78,6 +101,11 @@ public class AssetTableController extends TabController implements Initializable
 
         setTabType(TabType.ASSET);
         Platform.runLater(this);
+        get();
+
+        AssetEvent.subscribe(AssetEvent.Type.CREATE, type -> get());
+        AssetEvent.subscribe(AssetEvent.Type.UPDATE, type -> get());
+        AssetEvent.subscribe(AssetEvent.Type.DELETE, type -> get());
     }
 
     private static @NotNull TableColumn<AssetModel, HBox> getAssetActionsTableColumn() {
@@ -87,8 +115,10 @@ public class AssetTableController extends TabController implements Initializable
             var hBox = new HBox();
             var editBtn = new Button("Edit");
             var deleteBtn = new Button("Delete");
-            editBtn.setOnMouseClicked(event -> UserRoute.userFormLayout());
-            deleteBtn.setOnMouseClicked(event -> UserRoute.deleteConfirmationLayout());
+            HBox.setHgrow(editBtn, Priority.ALWAYS);
+            HBox.setHgrow(deleteBtn, Priority.ALWAYS);
+            editBtn.setOnMouseClicked(event -> View.assetFormWindow(Map.of("mode", FormMode.EDIT.name(), "assetModel", cellData.getValue())));
+            deleteBtn.setOnMouseClicked(event -> View.assetDeleteConfirmationWindow(Map.of("id", cellData.getValue().getId())));
             hBox.getChildren().add(editBtn);
             hBox.getChildren().add(deleteBtn);
             hBox.setSpacing(10);

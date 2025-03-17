@@ -13,15 +13,22 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ess.app.common.FormMode;
 import org.ess.app.common.TabType;
 import org.ess.app.controller.TabController;
+import org.ess.module.event.event.EventEvent;
 import org.ess.module.event.model.EventModel;
-import org.ess.module.event.repository.EventFakeRepository;
-import org.ess.module.user.route.UserRoute;
+import org.ess.app.window.View;
+import org.ess.module.event.service.EventService;
 import org.jetbrains.annotations.NotNull;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class EventTableController extends TabController implements Initializable {
@@ -29,22 +36,22 @@ public class EventTableController extends TabController implements Initializable
     @FXML
     TableView<EventModel> fxEventTableLayout;
 
+    private final EventService eventService = new EventService();
+
     private final ObservableList<EventModel> userModelObservableList = FXCollections.observableArrayList(new ArrayList<>());
 
     protected static final Logger logger = LogManager.getLogger(EventTableController.class);
 
     @Override
     public void initialize(Tab tab) {
-        userModelObservableList.clear();
-        userModelObservableList.addAll(EventFakeRepository.getData(50));
-        fxEventTableLayout.setItems(userModelObservableList);
+        requestEvents();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logger.info("Initialize");
 
-        TableColumn<EventModel, Integer> idColumn = new TableColumn<>("ID");
+        TableColumn<EventModel, Long> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getId()));
 
         TableColumn<EventModel, String> usernameColumn = new TableColumn<>("Name");
@@ -73,6 +80,27 @@ public class EventTableController extends TabController implements Initializable
 
         setTabType(TabType.EVENT);
         Platform.runLater(this);
+
+        EventEvent.subscribe(EventEvent.Type.CREATE, type -> requestEvents());
+        EventEvent.subscribe(EventEvent.Type.UPDATE, type -> requestEvents());
+        EventEvent.subscribe(EventEvent.Type.DELETE, type -> requestEvents());
+    }
+
+    void requestEvents() {
+        eventService.get(new Callback<>() {
+            @Override
+            public void onResponse(@NotNull Call<List<EventModel>> call, @NotNull Response<List<EventModel>> response) {
+                logger.info("Get Success {} {}", response.code(), response.message());
+                userModelObservableList.clear();
+                userModelObservableList.addAll(response.body());
+                fxEventTableLayout.setItems(userModelObservableList);
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<List<EventModel>> call, @NotNull Throwable throwable) {
+                logger.error(throwable);
+            }
+        });
     }
 
     private static @NotNull TableColumn<EventModel, HBox> getAssetActionsTableColumn() {
@@ -82,8 +110,8 @@ public class EventTableController extends TabController implements Initializable
             var hBox = new HBox();
             var editBtn = new Button("Edit");
             var deleteBtn = new Button("Delete");
-            editBtn.setOnMouseClicked(event -> UserRoute.userFormLayout());
-            deleteBtn.setOnMouseClicked(event -> UserRoute.deleteConfirmationLayout());
+            editBtn.setOnMouseClicked(event -> View.eventFormWindow(Map.of("mode", FormMode.EDIT, "eventModel", cellData.getValue())));
+            deleteBtn.setOnMouseClicked(event -> View.eventDeleteConfirmationWindow(Map.of("id", cellData.getValue().getId())));
             hBox.getChildren().add(editBtn);
             hBox.getChildren().add(deleteBtn);
             hBox.setSpacing(10);

@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class EventModel {
-    private int id;
+    private long id;
     private String name;
     private String location;
     private String status;

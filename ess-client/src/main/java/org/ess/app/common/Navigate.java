@@ -8,10 +8,9 @@ import javafx.stage.Stage;
 import org.ess.EssApplication;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class Navigate {
-
-    private static Parent masterLayout;
 
     /**
      * Retrieve the application primary stage
@@ -41,7 +40,7 @@ public class Navigate {
             Scene scene = FXMLInflater.inflate(EssApplication.class.getResource(layout));
 
             //
-            stage.setTitle("Event Scheduling System");
+            stage.setTitle("event Scheduling System");
 
             // Assign a new scene on the primary stage
             stage.setScene(scene);
@@ -49,8 +48,8 @@ public class Navigate {
             // Display the newly assigned scene
             stage.show();
 
-            scene.getWindow().setHeight(1000);
-            scene.getWindow().setWidth(800);
+            scene.getWindow().setHeight(600);
+            scene.getWindow().setWidth(600);
 
         } catch (IOException e) {
 
@@ -64,24 +63,9 @@ public class Navigate {
      *
      * @param layout The name of the layout file to load
      */
-    public static void to(String layout){
+    public static void to(String layout) {
         Stage stage = getParentStage();
-
-        if (masterLayout == null){
-            masterLayout = FXMLInflater.inflateParent("master_layout.fxml");
-
-            Scene scene = new Scene(masterLayout, 1800, 900);
-
-            stage.setScene(scene);
-        }
-
-        Parent childLayout = FXMLInflater.inflateParent(layout);
-
-        HBox fxLayoutContent = (HBox) stage.getScene().lookup("#fxLayoutContent");
-
-        fxLayoutContent.getChildren().removeAll(fxLayoutContent.getChildren());
-        fxLayoutContent.getChildren().add(childLayout);
-
+        stage.getScene().setRoot(FXMLInflater.inflateParent(layout));
         stage.show();
     }
 
@@ -102,12 +86,36 @@ public class Navigate {
         parent.requestFocus();
     }
 
+    public static void toWindow(String name, String layout, Map<String, Object> data) {
+        Parent parent = FXMLInflater.inflateParent(layout);
+        Stage stage = new Stage();
+        stage.initOwner(getParentStage());
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle(name);
+        stage.setUserData(data);
+        stage.setScene(new Scene(parent, 600, 600));
+        stage.show();
+        parent.requestFocus();
+    }
+
     public static void toWindow(String name, String layout, int width, int height) {
         Parent parent = FXMLInflater.inflateParent(layout);
         Stage stage = new Stage();
         stage.initOwner(getParentStage());
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(name);
+        stage.setScene(new Scene(parent, width, height));
+        stage.show();
+        parent.requestFocus();
+    }
+
+    public static void toWindow(String name, String layout, Map<String, Object> userData, int width, int height) {
+        Parent parent = FXMLInflater.inflateParent(layout);
+        Stage stage = new Stage();
+        stage.initOwner(getParentStage());
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle(name);
+        stage.setUserData(userData);
         stage.setScene(new Scene(parent, width, height));
         stage.show();
         parent.requestFocus();

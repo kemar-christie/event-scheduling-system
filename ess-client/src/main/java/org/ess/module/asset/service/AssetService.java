@@ -18,7 +18,11 @@ public class AssetService {
         HttpClient.use(AssetRepository.class).post(assetModel).enqueue(callback);
     }
 
-    public void delete(AssetModel assetModel, Callback<Boolean> callback) {
-        HttpClient.use(AssetRepository.class).delete(assetModel.getId()).enqueue(callback);
+    public void put(AssetModel assetModel, Callback<AssetModel> callback) {
+        HttpClient.use(AssetRepository.class).put(assetModel.getId(), assetModel).enqueue(callback);
+    }
+
+    public void delete(long id, Callback<Boolean> callback) {
+        HttpClient.use(AssetRepository.class).delete(id).enqueue(callback);
     }
 }

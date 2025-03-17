@@ -6,10 +6,12 @@ import org.ess.app.model.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class Data {
 
     public static User user;
+    public static String token;
 
     // List of parishes in Jamaica
     @Getter
@@ -35,7 +37,7 @@ public class Data {
      *
      * @return a list of strings representing the two-level combinations of parishes
      */
-    public static List<String> getAllCombination(){
+    public static List<String> getAllCombination() {
         // Print all parishes
         System.out.println("Parishes in Jamaica:");
         for (String parish : parishes) {
@@ -53,7 +55,7 @@ public class Data {
             combinations.add(String.join(" - ", combination));
         }
 
-      return combinations;
+        return combinations;
     }
 
     /**

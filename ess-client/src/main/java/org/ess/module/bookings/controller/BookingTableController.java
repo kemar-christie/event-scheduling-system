@@ -17,7 +17,7 @@ import org.ess.app.common.TabType;
 import org.ess.app.controller.TabController;
 import org.ess.module.bookings.model.BookingModel;
 import org.ess.module.bookings.repository.BookingFakeRepository;
-import org.ess.module.user.route.UserRoute;
+import org.ess.app.window.View;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
@@ -66,7 +66,7 @@ public class BookingTableController extends TabController implements Initializab
 
         fxBookingTableLayout
                 .getColumns()
-                .addAll(startDateColumn, startTimeColumn, endDateColumn, endTimeColumn,  updateAtColumn, createAtColumn, deleteStaff);
+                .addAll(startDateColumn, startTimeColumn, endDateColumn, endTimeColumn, updateAtColumn, createAtColumn, deleteStaff);
 
         setTabType(TabType.BOOKING);
         Platform.runLater(this);
@@ -79,8 +79,8 @@ public class BookingTableController extends TabController implements Initializab
             var hBox = new HBox();
             var editBtn = new Button("Edit");
             var deleteBtn = new Button("Delete");
-            editBtn.setOnMouseClicked(event -> UserRoute.userFormLayout());
-            deleteBtn.setOnMouseClicked(event -> UserRoute.deleteConfirmationLayout());
+            editBtn.setOnMouseClicked(event -> View.userFormWindow());
+            deleteBtn.setOnMouseClicked(event -> View.userDeleteConfirmationWindow());
             hBox.getChildren().add(editBtn);
             hBox.getChildren().add(deleteBtn);
             hBox.setSpacing(10);

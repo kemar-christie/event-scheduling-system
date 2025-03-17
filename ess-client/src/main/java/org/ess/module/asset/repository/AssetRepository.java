@@ -8,12 +8,18 @@ import java.util.List;
 
 public interface AssetRepository {
 
-    @GET("users")
+    @GET("/api/assets/{id}")
+    Call<Boolean> get(@Path("id") int id);
+
+    @PUT("/api/assets/{id}")
+    Call<AssetModel> put(@Path("id") long id, @Body AssetModel assetModel);
+
+    @DELETE("/api/assets/{id}")
+    Call<Boolean> delete(@Path("id") long id);
+
+    @GET("/api/assets")
     Call<List<AssetModel>> get();
 
-    @POST("users")
+    @POST("/api/assets")
     Call<AssetModel> post(@Body AssetModel assetModel);
-
-    @DELETE("users/{id}")
-    Call<Boolean> delete(@Path("id") int id);
 }

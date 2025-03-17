@@ -17,7 +17,11 @@ public class EventService {
         HttpClient.use(EventRepository.class).post(eventModel).enqueue(callback);
     }
 
-    public void delete(EventModel eventModel, Callback<Boolean> callback) {
-        HttpClient.use(EventRepository.class).delete(eventModel.getId()).enqueue(callback);
+    public void put(EventModel eventModel, Callback<EventModel> callback) {
+        HttpClient.use(EventRepository.class).put(eventModel.getId(), eventModel).enqueue(callback);
+    }
+
+    public void delete(long id, Callback<Boolean> callback) {
+        HttpClient.use(EventRepository.class).delete(id).enqueue(callback);
     }
 }

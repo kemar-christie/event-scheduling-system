@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class AssetModel {
 
-    private int id;
+    private long id;
 
     private String name;
 
@@ -24,6 +24,8 @@ public class AssetModel {
     private String condition;
 
     private String status;
+
+    private double price;
 
     private String createdAt;
 
