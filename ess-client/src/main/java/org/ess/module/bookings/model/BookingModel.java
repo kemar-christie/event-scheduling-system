@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class BookingModel {
-    private int id;
+    private long id;
     private long eventId;
     private long assetId;
     private String startDate;

@@ -56,8 +56,8 @@ public class BookingService {
 
         booking.setEvent(event);
         booking.setAsset(asset);
-        booking.setStartTime(dto.getStartTime());
-        booking.setEndTime(dto.getEndTime());
+        booking.setStartTime(dto.getStartDate());
+        booking.setEndTime(dto.getEndDate());
 
         booking = bookingRepository.save(booking);
 

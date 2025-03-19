@@ -4,6 +4,8 @@ import com.ess.essserver.module.asset.AssetEntity;
 import com.ess.essserver.module.event.EventEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -27,10 +29,10 @@ public class BookingEntity {
     private AssetEntity asset;
 
     @Column(nullable = false)
-    private LocalDateTime startTime;
+    private LocalDate startTime;
 
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private LocalDate endTime;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

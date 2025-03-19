@@ -2,6 +2,8 @@ package com.ess.essserver.module.booking;
 
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -9,10 +11,12 @@ import java.time.LocalDateTime;
 public class BookingResponseDTO {
 
     private Long id;
+    private Long eventId;
+    private Long assetId;
     private String eventName;
     private String assetName;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

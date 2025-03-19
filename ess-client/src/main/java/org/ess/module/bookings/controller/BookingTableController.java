@@ -13,15 +13,22 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ess.app.common.FormMode;
 import org.ess.app.common.TabType;
 import org.ess.app.controller.TabController;
+import org.ess.module.bookings.event.BookingEvent;
 import org.ess.module.bookings.model.BookingModel;
-import org.ess.module.bookings.repository.BookingFakeRepository;
 import org.ess.app.window.View;
+import org.ess.module.bookings.service.BookingService;
 import org.jetbrains.annotations.NotNull;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class BookingTableController extends TabController implements Initializable {
@@ -29,15 +36,23 @@ public class BookingTableController extends TabController implements Initializab
     @FXML
     TableView<BookingModel> fxBookingTableLayout;
 
+    private final BookingService bookingService = new BookingService();
+
     private final ObservableList<BookingModel> userModelObservableList = FXCollections.observableArrayList(new ArrayList<>());
 
     protected static final Logger logger = LogManager.getLogger(BookingTableController.class);
 
     @Override
     public void initialize(Tab tab) {
-        userModelObservableList.clear();
-        userModelObservableList.addAll(BookingFakeRepository.getData(50));
-        fxBookingTableLayout.setItems(userModelObservableList);
+        requestBookingData();
+
+        fxBookingTableLayout.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        fxBookingTableLayout.setPrefWidth(1); // Enables auto-sizing
+        fxBookingTableLayout.setPrefWidth(1); // Enables auto-sizing
+        fxBookingTableLayout.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            fxBookingTableLayout.refresh(); // Forces the table to re-render itself
+        });
+
     }
 
     @Override
@@ -54,7 +69,7 @@ public class BookingTableController extends TabController implements Initializab
         endDateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getEndDate()));
 
         TableColumn<BookingModel, String> endTimeColumn = new TableColumn<>("End Time");
-        endTimeColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getEndTime()));
+        endTimeColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStartDate()));
 
         TableColumn<BookingModel, String> updateAtColumn = new TableColumn<>("Update At");
         updateAtColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getUpdatedAt()));
@@ -70,6 +85,29 @@ public class BookingTableController extends TabController implements Initializab
 
         setTabType(TabType.BOOKING);
         Platform.runLater(this);
+        BookingEvent.subscribe(BookingEvent.Type.CREATE, event -> requestBookingData());
+        BookingEvent.subscribe(BookingEvent.Type.UPDATE, event -> requestBookingData());
+        BookingEvent.subscribe(BookingEvent.Type.DELETE, event -> requestBookingData());
+    }
+
+    private void requestBookingData() {
+        bookingService.get(new Callback<>() {
+            @Override
+            public void onResponse(@NotNull Call<List<BookingModel>> call, @NotNull Response<List<BookingModel>> response) {
+                logger.info("Booking Success {} {}", response.code(), response.message());
+
+                if (response.isSuccessful() && response.body() != null) {
+                    userModelObservableList.clear();
+                    userModelObservableList.addAll(response.body());
+                    fxBookingTableLayout.setItems(userModelObservableList);
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<List<BookingModel>> call, @NotNull Throwable throwable) {
+                logger.info("Booking Failure {}", throwable.getMessage());
+            }
+        });
     }
 
     private static @NotNull TableColumn<BookingModel, HBox> getBookingActionsTableColumn() {
@@ -79,8 +117,8 @@ public class BookingTableController extends TabController implements Initializab
             var hBox = new HBox();
             var editBtn = new Button("Edit");
             var deleteBtn = new Button("Delete");
-            editBtn.setOnMouseClicked(event -> View.userFormWindow());
-            deleteBtn.setOnMouseClicked(event -> View.userDeleteConfirmationWindow());
+            editBtn.setOnMouseClicked(event -> View.bookingFormWindow(Map.of("mode", FormMode.EDIT, "bookingModel", cellData.getValue())));
+            deleteBtn.setOnMouseClicked(event -> View.bookingDeleteConfirmationWindow(Map.of("id", cellData.getValue().getId())));
             hBox.getChildren().add(editBtn);
             hBox.getChildren().add(deleteBtn);
             hBox.setSpacing(10);

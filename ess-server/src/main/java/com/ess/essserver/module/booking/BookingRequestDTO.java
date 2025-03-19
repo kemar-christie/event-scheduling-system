@@ -1,13 +1,11 @@
 package com.ess.essserver.module.booking;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
-@Builder
 public class BookingRequestDTO {
 
     @NotNull(message = "event ID is required")
@@ -17,8 +15,8 @@ public class BookingRequestDTO {
     private Long assetId;
 
     @NotNull(message = "Start time is required")
-    private LocalDateTime startTime;
+    private LocalDate startDate;
 
     @NotNull(message = "End time is required")
-    private LocalDateTime endTime;
+    private LocalDate endDate;
 }

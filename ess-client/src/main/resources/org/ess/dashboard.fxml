@@ -185,7 +185,7 @@
                                                 <Insets />
                                             </opaqueInsets>
                                         </HBox>
-                                        <Button alignment="CENTER" ellipsisString="" mnemonicParsing="false" prefHeight="26.0" prefWidth="111.0" style="-fx-background-color: #0d6efd; -fx-border-color: #0d6efd; -fx-border-radius: 10;" text="Create Bookings" textFill="WHITE">
+                                        <Button alignment="CENTER" ellipsisString="" mnemonicParsing="false" onMouseClicked="#onClickCreateBooking" prefHeight="26.0" prefWidth="111.0" style="-fx-background-color: #0d6efd; -fx-border-color: #0d6efd; -fx-border-radius: 10;" text="Create Bookings" textFill="WHITE">
                                             <font>
                                                 <Font name="System Bold Italic" size="13.0" />
                                             </font>

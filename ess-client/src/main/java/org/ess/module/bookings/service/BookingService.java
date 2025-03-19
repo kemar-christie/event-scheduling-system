@@ -17,7 +17,15 @@ public class BookingService {
         HttpClient.use(BookingRepository.class).post(bookingModel).enqueue(callback);
     }
 
-    public void delete(BookingModel bookingModel, Callback<Boolean> callback) {
-        HttpClient.use(BookingRepository.class).delete(bookingModel.getId()).enqueue(callback);
+    public void get(long id, Callback<BookingModel> callback) {
+        HttpClient.use(BookingRepository.class).get(id).enqueue(callback);
+    }
+
+    public void put(BookingModel bookingModel, Callback<BookingModel> callback) {
+        HttpClient.use(BookingRepository.class).put(bookingModel.getId(), bookingModel).enqueue(callback);
+    }
+
+    public void delete(long id, Callback<Boolean> callback) {
+        HttpClient.use(BookingRepository.class).delete(id).enqueue(callback);
     }
 }

@@ -11,18 +11,20 @@ public class BookingMapper {
         return BookingEntity.builder()
                 .event(event)
                 .asset(asset)
-                .startTime(dto.getStartTime())
-                .endTime(dto.getEndTime())
+                .startTime(dto.getStartDate())
+                .endTime(dto.getEndDate())
                 .build();
     }
 
     public BookingResponseDTO toResponseDTO(BookingEntity entity) {
         return BookingResponseDTO.builder()
                 .id(entity.getId())
+                .assetId(entity.getAsset().getId())
+                .eventId(entity.getEvent().getId())
                 .eventName(entity.getEvent().getName())
                 .assetName(entity.getAsset().getName())
-                .startTime(entity.getStartTime())
-                .endTime(entity.getEndTime())
+                .startDate(entity.getStartTime())
+                .endDate(entity.getEndTime())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

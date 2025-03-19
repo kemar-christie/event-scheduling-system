@@ -9,12 +9,18 @@ import java.util.List;
 
 public interface BookingRepository {
 
-    @GET("users")
+    @GET("/api/bookings")
     Call<List<BookingModel>> get();
 
-    @POST("users")
+    @POST("/api/bookings")
     Call<BookingModel> post(@Body BookingModel bookingModel);
 
-    @DELETE("users/{id}")
-    Call<Boolean> delete(@Path("id") int id);
+    @GET("/api/bookings/{id}")
+    Call<BookingModel> get(@Path("id") long id);
+
+    @PUT("/api/bookings/{id}")
+    Call<BookingModel> put(@Path("id") long id, @Body BookingModel bookingModel);
+
+    @DELETE("/api/bookings/{id}")
+    Call<Boolean> delete(@Path("id") long id);
 }

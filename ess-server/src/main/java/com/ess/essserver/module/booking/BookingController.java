@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,8 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+
+    private final Logger logger = LogManager.getLogger(BookingController.class.getName());
 
     @Operation(summary = "Get all bookings")
     @GetMapping
@@ -32,6 +36,7 @@ public class BookingController {
     @Operation(summary = "Create a new booking")
     @PostMapping
     public ResponseEntity<BookingResponseDTO> createBooking(@Valid @RequestBody BookingRequestDTO dto) {
+        logger.info("{}, {}", dto.getStartDate(), dto.getEndDate());
         return ResponseEntity.ok(bookingService.createBooking(dto));
     }
 

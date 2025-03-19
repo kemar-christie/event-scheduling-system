@@ -26,4 +26,11 @@ public class DashboardController {
 
         View.eventFormWindow(Map.of("mode", FormMode.CREATE));
     }
+
+    @FXML
+    void onClickCreateBooking(MouseEvent event) {
+        logger.info("Create Booking");
+
+        View.bookingFormWindow(Map.of("mode", FormMode.CREATE));
+    }
 }
